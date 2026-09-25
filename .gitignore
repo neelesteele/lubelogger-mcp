@@ -12,5 +12,6 @@ ENV/
 # macOS
 .DS_Store
 
-# Local / personal scripts
+# Local / personal scripts & config
 scripts/import_vanadeth.py
+mcp_config.json

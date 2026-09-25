@@ -30,7 +30,7 @@ This package enables conversational AI assistants (Antigravity, Claude Desktop, 
 lubelogger/
 ├── SKILL.md                          # Antigravity Skill definition & runbook
 ├── plugin.json                       # Antigravity plugin manifest
-├── mcp_config.json                   # MCP server configuration snippet
+├── mcp_config.example.json           # Sample MCP server configuration
 ├── .env.example                      # Configuration template
 ├── README.md                         # Documentation & setup guide
 ├── mcp_server/
@@ -110,7 +110,7 @@ Auth Method: API Key (abcd...wxyz)
 ### 1. Antigravity IDE / CLI
 
 #### Option A: Project Workspace (Automatic)
-Keep this repository in your project directory or point your workspace to it. The `plugin.json` and `mcp_config.json` will be detected automatically.
+Keep this repository in your project directory or point your workspace to it. Copy `mcp_config.example.json` to `mcp_config.json` and adjust paths/URLs as needed. The `plugin.json` and `mcp_config.json` will be detected automatically.
 
 #### Option B: Global MCP Configuration
 Add the server entry to your global configuration file `~/.gemini/config/mcp_config.json`:
