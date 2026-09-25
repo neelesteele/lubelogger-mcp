@@ -1,0 +1,6 @@
+{
+  "name": "lubelogger",
+  "description": "Integration skill and MCP server for tracking vehicle maintenance and fuel mileage in LubeLogger",
+  "version": "1.0.0",
+  "author": "Antigravity Pair Programmer"
+}

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "lubelogger": {
+      "command": "/opt/homebrew/bin/python3",
+      "args": ["/Users/neelesteele/projects/skills/lubelogger/mcp_server/server.py"],
+      "env": {
+        "LUBELOGGER_URL": "http://localhost:5000",
+        "LUBELOGGER_API_KEY": "",
+        "LUBELOGGER_VERIFY_SSL": "true"
+      }
+    }
+  }
+}
