@@ -11,3 +11,6 @@ ENV/
 
 # macOS
 .DS_Store
+
+# Local / personal scripts
+scripts/import_vanadeth.py

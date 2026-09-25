@@ -8,6 +8,7 @@ import sys
 import json
 import base64
 import ssl
+import subprocess
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -154,7 +155,47 @@ class LubeLoggerClient:
                 msg = err_body
             raise RuntimeError(f"LubeLogger API error {e.code} ({e.reason}): {msg}") from e
         except urllib.error.URLError as e:
-            raise RuntimeError(f"Failed to connect to LubeLogger at {self.base_url}: {e.reason}") from e
+            try:
+                return self._request_curl(method, url, headers, data)
+            except RuntimeError as r_err:
+                if "LubeLogger API error" in str(r_err):
+                    raise
+                raise RuntimeError(f"Failed to connect to LubeLogger at {self.base_url}: {e.reason}") from r_err
+            except Exception as curl_err:
+                raise RuntimeError(f"Failed to connect to LubeLogger at {self.base_url}: {e.reason}") from curl_err
+
+    def _request_curl(self, method: str, url: str, headers: Dict[str, str], data: Optional[bytes]) -> Any:
+        cmd = ["curl", "-s", "-w", "\n%{http_code}", "-X", method.upper(), url]
+        if not self.verify_ssl:
+            cmd.append("-k")
+        for k, v in headers.items():
+            cmd.extend(["-H", f"{k}: {v}"])
+        if data:
+            cmd.extend(["--data", data.decode("utf-8")])
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=self.timeout)
+        if res.returncode != 0:
+            raise RuntimeError(f"curl failed: {res.stderr}")
+
+        output = res.stdout
+        if "\n" in output:
+            body_text, status_str = output.rsplit("\n", 1)
+        else:
+            body_text, status_str = output, "200"
+
+        status_code = int(status_str.strip()) if status_str.strip().isdigit() else 200
+        if status_code >= 400:
+            raise RuntimeError(f"LubeLogger API error {status_code}: {body_text}")
+
+        raw = body_text.strip()
+        if raw.startswith(("{", "[")):
+            try:
+                return json.loads(raw)
+            except json.JSONDecodeError:
+                return raw
+        try:
+            return json.loads(raw)
+        except Exception:
+            return raw
 
     # --- Diagnostics & Metadata ---
 
